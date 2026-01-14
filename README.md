@@ -197,6 +197,15 @@ scripts/results/
 
 ---
 
+### Download dos modelos treinados
+
+Os pesos dos modelos não são versionados no repositório.
+Para baixar automaticamente:
+
+```bash
+./scripts/download_models.sh
+
+
 ## 🧑‍🔬 Observação Final
 
 Este projeto foi estruturado para:
