@@ -12,42 +12,42 @@ API para detecção e classificação de fígado canino e felino em imagens méd
 
 api_visao_computacional/
 │
-├─ app/ # Código principal da API
-│ ├─ init.py
-│ ├─ main.py # Instancia FastAPI e endpoints
-│ ├─ classifier.py # Classificador de espécie (CNN)
-│ ├─ detectron.py # Funções Detectron2
-│ ├─ utils.py # Funções utilitárias
-│ └─ routers/
-│ ├─ init.py
-│ └─ detectron.py # Endpoints Detectron específicos
+├─ app/                        # Código principal da API
+│  ├─ __init__.py
+│  ├─ main.py                  # Instancia FastAPI e endpoints
+│  ├─ classifier.py            # Classificador de espécie
+│  ├─ detectron.py             # Funções Detectron2
+│  ├─ utils.py                 # Funções utilitárias (leitura de imagens, anotação etc.)
+│  └─ routers/
+│     ├─ __init__.py
+│     └─ detectron.py          # Endpoints específicos Detectron
 │
 ├─ configs/
-│ └─ app.yaml # Configurações da API (modelos, paths etc.)
+│  └─ app.yaml                 # Configurações gerais da API (caminhos de modelos etc.)
 │
 ├─ models/
-│ ├─ classifier/
-│ │ └─ species_classifier.pth
-│ └─ detectron/
-│ ├─ canino/
-│ │ ├─ inferencia_canino.yaml
-│ │ └─ model_final_canino.pth
-│ └─ felino/
-│ ├─ inferencia_felino.yaml
-│ └─ model_final_felino.pth
+│  ├─ classifier/
+│  │  └─ species_classifier.pth
+│  └─ detectron/
+│     ├─ canino/
+│     │  ├─ inferencia_canino.yaml
+│     │  └─ model_final_canino.pth
+│     └─ felino/
+│        ├─ inferencia_felino.yaml
+│        └─ model_final_felino.pth
 │
-├─ scripts/ # Scripts auxiliares
-│ ├─ download_models.sh # Baixar pesos grandes
-│ ├─ evaluate_classifier.py
-│ ├─ evaluate_detectron.py
-│ ├─ evaluate_detectron_coco.py
-│ ├─ evaluate_detectron_labelme.py
-│ ├─ infer_detectron.py
-│ └─ predict_detectron_labelme.py
+├─ scripts/                    # Scripts auxiliares
+│  ├─ evaluate_classifier.py
+│  ├─ evaluate_detectron.py
+│  ├─ evaluate_detectron_coco.py
+│  ├─ evaluate_detectron_labelme.py
+│  ├─ infer_detectron.py
+│  ├─ predict_detectron_labelme.py
+│  └─ download_models.sh       # Script para baixar modelos grandes
 │
-├─ uploads/ # Imagens enviadas pelo usuário
-├─ outputs/ # Resultados anotados
-├─ app_streamlit.py # Interface Streamlit
+├─ uploads/                     # Imagens enviadas pelo usuário
+├─ outputs/                     # Resultados anotados gerados
+├─ app_streamlit.py             # Interface Streamlit
 ├─ Dockerfile
 ├─ .dockerignore
 ├─ .gitignore
