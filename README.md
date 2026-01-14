@@ -99,12 +99,15 @@ docker run -p 8000:8000 api-figado
 A API estará acessível em http://localhost:8000.
 
 🧰 Scripts Auxiliares
-Script	Função
-download_models.sh	Baixa ou move pesos grandes para a pasta correta
-evaluate_classifier.py	Avalia o classificador CNN
-evaluate_detectron*.py	Avalia modelos Detectron2 (LabelMe ou COCO)
-infer_detectron.py	Executa inferência em imagens de teste
-predict_detectron_labelme.py	Prediz imagens usando dataset LabelMe
+| Script                         | Função                                           |
+| ------------------------------ | ------------------------------------------------ |
+| `download_models.sh`           | Baixa ou move pesos grandes para a pasta correta |
+| `evaluate_classifier.py`       | Avalia o classificador CNN                       |
+| `evaluate_detectron*.py`       | Avalia modelos Detectron2 (LabelMe ou COCO)      |
+| `infer_detectron.py`           | Executa inferência em imagens de teste           |
+| `predict_detectron_labelme.py` | Prediz imagens usando dataset LabelMe            |
+
+
 📂 Estrutura de Modelos
 
 Classificador CNN:
