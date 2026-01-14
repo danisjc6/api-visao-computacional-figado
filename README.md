@@ -1,222 +1,137 @@
-# 🧠 API de Visão Computacional – Classificação e Detecção de Fígado (Canino/Felino)
+# API Visão Computacional – Fígado Canino/Felino 🐶🐱
 
-Este repositório contém uma **API em FastAPI** e **scripts auxiliares** para:
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0-lightgrey)
+![Detectron2](https://img.shields.io/badge/Detectron2-0.6-orange)
 
-* Classificação de espécie (**canino x felino**) a partir de imagens de fígado
-* Detecção de estruturas hepáticas usando **Detectron2**
-* Avaliação científica dos modelos treinados
-
-O projeto foi desenvolvido com foco em **pesquisa aplicada**, **reprodutibilidade** e **uso em produção**.
+API para detecção e classificação de fígado canino e felino em imagens médicas, utilizando **FastAPI**, **PyTorch** e **Detectron2**. Inclui interface web via **Streamlit** e scripts de avaliação.
 
 ---
 
-## 📁 Estrutura do Projeto
+## 🗂 Estrutura do Projeto
 
-```text
 api_visao_computacional/
 │
-├── app/                    # Código principal da API (FastAPI)
-│   ├── main.py             # Endpoints da API
-│   ├── classifier.py       # Classificador canino/felino (PyTorch)
-│   ├── detectron.py        # Inferência Detectron2 (produção)
-│   ├── utils.py            # Pré-processamento e utilidades
-│   └── routers/            # Rotas adicionais
+├─ app/ # Código principal da API
+│ ├─ init.py
+│ ├─ main.py # Instancia FastAPI e endpoints
+│ ├─ classifier.py # Classificador de espécie (CNN)
+│ ├─ detectron.py # Funções Detectron2
+│ ├─ utils.py # Funções utilitárias
+│ └─ routers/
+│ ├─ init.py
+│ └─ detectron.py # Endpoints Detectron específicos
 │
-├── models/
-│   ├── classifier/         # Pesos do classificador
-│   └── detectron/          # Pesos e configs Detectron2 (canino/felino)
+├─ configs/
+│ └─ app.yaml # Configurações da API (modelos, paths etc.)
 │
-├── configs/                # Arquivos YAML de configuração
+├─ models/
+│ ├─ classifier/
+│ │ └─ species_classifier.pth
+│ └─ detectron/
+│ ├─ canino/
+│ │ ├─ inferencia_canino.yaml
+│ │ └─ model_final_canino.pth
+│ └─ felino/
+│ ├─ inferencia_felino.yaml
+│ └─ model_final_felino.pth
 │
-├── scripts/                # Scripts offline (avaliação e inferência)
-│   ├── infer_detectron.py
-│   ├── evaluate_classifier.py
-│   ├── evaluate_detectron_coco.py
-│   ├── evaluate_detectron_labelme.py
-│   ├── predict_detectron_labelme.py
-│   └── results/
+├─ scripts/ # Scripts auxiliares
+│ ├─ download_models.sh # Baixar pesos grandes
+│ ├─ evaluate_classifier.py
+│ ├─ evaluate_detectron.py
+│ ├─ evaluate_detectron_coco.py
+│ ├─ evaluate_detectron_labelme.py
+│ ├─ infer_detectron.py
+│ └─ predict_detectron_labelme.py
 │
-├── venv/                   # Ambiente virtual
-└── README.md               # Este arquivo
-```
+├─ uploads/ # Imagens enviadas pelo usuário
+├─ outputs/ # Resultados anotados
+├─ app_streamlit.py # Interface Streamlit
+├─ Dockerfile
+├─ .dockerignore
+├─ .gitignore
+├─ requirements.txt
+└─ README.md
+
 
 ---
 
-## 🚀 API (Produção)
+## ⚡ Rodando Localmente
 
-### ▶️ Arquivo principal
-
-**`app/main.py`**
-
-* Inicializa o FastAPI
-* Carrega os modelos uma única vez
-* Expõe o endpoint principal:
-
-```http
-POST /predict
-```
-
-Fluxo do endpoint:
-
-1. Recebe imagem
-2. Classifica a espécie (canino/felino)
-3. Executa Detectron2 com o modelo correspondente
-4. Valida se há fígado
-5. Retorna JSON + imagem anotada
-
----
-
-## 🤖 Modelos
-
-### Classificador (PyTorch)
-
-* Arquivo: `app/classifier.py`
-* Entrada: imagem
-* Saída: espécie + confiança
-* Modelo: ResNet treinada
-
-Pesos:
-
-```text
-models/classifier/species_classifier.pth
-```
-
----
-
-### Detectron2 (Detecção)
-
-* Arquivo: `app/detectron.py`
-* Função principal: `load_predictor(especie)`
-* Um modelo por espécie (canino/felino)
-
-Pesos:
-
-```text
-models/detectron/canino/model_final_canino.pth
-models/detectron/felino/model_final_felino.pth
-```
-
-⚠️ Este código é **somente inferência**, adequado para produção.
-
----
-
-## 🧪 Scripts (`scripts/`)
-
-### 🟢 `infer_detectron.py`
-
-**Inferência offline** com Detectron2.
-
-* Recebe imagens individuais ou pasta
-* Salva imagens anotadas
-* Não usa dataset
-
-📌 Usado para testes manuais e depuração.
-
----
-
-### 🟢 `evaluate_classifier.py`
-
-Avaliação do **classificador canino/felino**.
-
-* Usa dataset de validação
-* Métricas:
-
-  * Accuracy
-  * Confusion Matrix
-
-📌 Uso científico / relatório
-
----
-
-### 🟢 `evaluate_detectron_coco.py`
-
-Avaliação **oficial Detectron2 (COCO)**.
-
-* Usa dataset no formato COCO
-* Métricas:
-
-  * mAP
-  * AP50
-  * AP75
-
-📌 Usado para validação científica do modelo
-📌 **Não usado em produção**
-
----
-
-### 🟡 `evaluate_detectron_labelme.py`
-
-Avaliação para datasets anotados com **LabelMe**.
-
-* Converte LabelMe → Detectron2
-
-📌 Use apenas se o dataset for LabelMe
-
----
-
-### 🟡 `predict_detectron_labelme.py`
-
-Inferência em **datasets LabelMe**.
-
-* Gera imagens anotadas
-* Uso offline
-
----
-
-## ❌ O que NÃO vai para produção
-
-* Scripts de avaliação
-* Registro de datasets
-* COCOEvaluator
-
-> **Regra de ouro:** Avaliação ≠ Inferência
-
----
-
-## ▶️ Como rodar a API
+1. Ative seu ambiente virtual:
 
 ```bash
+cd ~/api_visao_computacional
 source venv/bin/activate
-uvicorn app.main:app --reload
-```
 
-Acesse:
+Instale as dependências:
+pip install -r requirements.txt
 
-* Swagger: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* Health check: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+Suba a API FastAPI:
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
----
+Teste endpoints:
 
-## 📊 Resultados
+http://127.0.0.1:8000
+ → Health check
 
-Resultados de avaliação e inferência são salvos em:
+http://127.0.0.1:8000/docs
+ → Swagger UI
 
-```text
-scripts/results/
-```
+Suba a interface Streamlit (opcional):
+streamlit run app_streamlit.py
 
----
+🐳 Usando Docker
 
-### Download dos modelos treinados
+Build da imagem:
+docker build -t api-figado .
 
-Os pesos dos modelos não são versionados no repositório.
-Para baixar automaticamente:
+Rodar container:
+docker run -p 8000:8000 api-figado
+A API estará acessível em http://localhost:8000.
 
-```bash
-./scripts/download_models.sh
+🧰 Scripts Auxiliares
+| Script                         | Função                                           |
+| ------------------------------ | ------------------------------------------------ |
+| `download_models.sh`           | Baixa ou move pesos grandes para a pasta correta |
+| `evaluate_classifier.py`       | Avalia o classificador CNN                       |
+| `evaluate_detectron*.py`       | Avalia modelos Detectron2 (LabelMe ou COCO)      |
+| `infer_detectron.py`           | Executa inferência em imagens de teste           |
+| `predict_detectron_labelme.py` | Prediz imagens usando dataset LabelMe            |
 
+📂 Estrutura de Modelos
 
-## 🧑‍🔬 Observação Final
+Classificador CNN:
+models/classifier/species_classifier.pth
 
-Este projeto foi estruturado para:
+Detectron2:
 
-* Pesquisa acadêmica
-* Reprodutibilidade
-* Uso em ambiente real (API)
+Canino: models/detectron/canino/model_final_canino.pth
 
-Qualquer dúvida sobre avaliação, inferência ou deploy deve considerar essa separação.
+Felino: models/detectron/felino/model_final_felino.pth
 
----
+Configs YAML correspondentes em cada pasta.
 
-📌 **Autora:** Daniela Oliveira
-📌 **Área:** Visão Computacional aplicada à Anatomia Veterinária
+🚀 Deploy
+
+Pode ser feito em servidor Linux, VPS ou cloud (AWS, GCP, Azure) usando Docker.
+
+Basta buildar a imagem no servidor e rodar o container.
+
+Streamlit pode ser exposto em uma porta separada ou integrado à API com reverse proxy (Nginx).
+
+🔧 Observações
+
+Logs e resultados: salvos em outputs/ e logs/ (quando criado).
+
+Uploads temporários: uploads/.
+
+Git: arquivos pesados (.pth) podem ser tratados com download_models.sh ou Git LFS.
+
+Reprodutibilidade: Docker garante ambiente consistente para qualquer servidor.
+
+💡 Contato
+
+Desenvolvido por Daniela Oliveira
+daniela.oliveira@ufape.edu.br
