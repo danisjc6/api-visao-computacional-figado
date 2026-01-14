@@ -1,0 +1,17 @@
+
+classifier:
+  model: "models/classifier/species_classifier.pth"
+  threshold: 0.8
+
+detectron:
+  canino:
+    config: "models/detectron/canino/inferencia_canino.yaml"
+    weights: "models/detectron/canino/model_final_canino.pth"
+
+  felino:
+    config: "models/detectron/felino/inferencia_felino.yaml"
+    weights: "models/detectron/felino/model_final_felino.pth"
+
+logging:
+  enabled: true
+  path: "logs/predictions.jsonl"

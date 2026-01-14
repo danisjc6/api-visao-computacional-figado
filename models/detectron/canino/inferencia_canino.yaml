@@ -1,0 +1,12 @@
+_BASE_: "../../../detectron2/configs/COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"
+
+MODEL:
+  WEIGHTS: "models/detectron/canino/model_final_canino.pth"
+  DEVICE: "cpu"
+
+  ROI_HEADS:
+    NUM_CLASSES: 2
+    SCORE_THRESH_TEST: 0.3
+
+INPUT:
+  FORMAT: "BGR"
