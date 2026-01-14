@@ -55,21 +55,22 @@ api_visao_computacional/
 └─ README.md
 
 
----
-
-## ⚡ Rodando Localmente
+⚡ Rodando Localmente
 
 1. Ative seu ambiente virtual:
 
-```bash
 cd ~/api_visao_computacional
 source venv/bin/activate
 
 Instale as dependências:
+
 pip install -r requirements.txt
 
+
 Suba a API FastAPI:
+
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+
 
 Teste endpoints:
 
@@ -80,26 +81,30 @@ http://127.0.0.1:8000/docs
  → Swagger UI
 
 Suba a interface Streamlit (opcional):
+
 streamlit run app_streamlit.py
 
 🐳 Usando Docker
 
 Build da imagem:
+
 docker build -t api-figado .
 
+
 Rodar container:
+
 docker run -p 8000:8000 api-figado
+
+
 A API estará acessível em http://localhost:8000.
 
 🧰 Scripts Auxiliares
-| Script                         | Função                                           |
-| ------------------------------ | ------------------------------------------------ |
-| `download_models.sh`           | Baixa ou move pesos grandes para a pasta correta |
-| `evaluate_classifier.py`       | Avalia o classificador CNN                       |
-| `evaluate_detectron*.py`       | Avalia modelos Detectron2 (LabelMe ou COCO)      |
-| `infer_detectron.py`           | Executa inferência em imagens de teste           |
-| `predict_detectron_labelme.py` | Prediz imagens usando dataset LabelMe            |
-
+Script	Função
+download_models.sh	Baixa ou move pesos grandes para a pasta correta
+evaluate_classifier.py	Avalia o classificador CNN
+evaluate_detectron*.py	Avalia modelos Detectron2 (LabelMe ou COCO)
+infer_detectron.py	Executa inferência em imagens de teste
+predict_detectron_labelme.py	Prediz imagens usando dataset LabelMe
 📂 Estrutura de Modelos
 
 Classificador CNN:
