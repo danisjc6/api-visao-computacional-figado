@@ -4,7 +4,7 @@ import yaml
 
 from app.classifier import SpeciesClassifier
 from app.detectron import load_predictor
-from app.utils import read_image, preprocess_classifier, save_annotated_image
+from app.utils import read_image, save_annotated_image
 from app.routers import detectron
 
 # ======================
@@ -44,6 +44,11 @@ CLASS_NAMES = {
         1: "processo_papilar_felino"
     }
 }
+
+app.state.classifier = classifier
+app.state.predictors = predictors
+app.state.class_names = CLASS_NAMES
+app.state.valid_liver_classes = VALID_LIVER_CLASSES
 
 # ======================
 # Endpoint principal

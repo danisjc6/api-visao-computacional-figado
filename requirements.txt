@@ -1,8 +1,10 @@
 fastapi
 uvicorn
+python-multipart
 pyyaml
 numpy
 opencv-python-headless
 torch
 torchvision
-
+gdown
+scikit-learn

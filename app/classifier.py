@@ -40,6 +40,9 @@ class SpeciesClassifier:
         if not os.path.exists(full_model_path):
             raise FileNotFoundError(f"Modelo não encontrado: {full_model_path}")
 
+        if os.path.getsize(full_model_path) == 0:
+            raise ValueError(f"Modelo vazio ou corrompido: {full_model_path}")
+
         self.device = "cpu"
 
         self.model = torch.load(

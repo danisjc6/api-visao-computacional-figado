@@ -14,14 +14,7 @@ def load_predictor(species: str):
     return DefaultPredictor(cfg)
 
 
-# Inicializa os dois modelos uma vez
-predictors = {
-    "canino": load_predictor("canino"),
-    "felino": load_predictor("felino")
-}
-
-
-def predict_image_auto(image_path: str):
+def predict_image_auto(image_path: str, predictors: dict):
     """
     Recebe imagem, roda os dois modelos e retorna espécie + detecção com maior confiança
     """
