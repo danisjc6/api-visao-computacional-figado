@@ -13,22 +13,34 @@ mkdir -p models/detectron/canino
 mkdir -p models/detectron/felino
 
 # =========================
-# URLs dos modelos
+# IDs dos arquivos no Google Drive
 # =========================
-CLASSIFIER_URL="https://drive.google.com/file/d/1B_Ohq7HqCkzCBIh8C5NsrFA6RAfFfwPt/view?usp=drive_link"
-CANINO_URL="https://drive.google.com/file/d/1f3rOxLYnwad-knkd8nZTslqdfQ2hChFM/view?usp=drive_link"
-FELINO_URL="https://drive.google.com/file/d/12r40vOmQZnbXkYMPqkYfE-fNJWonqUzG/view?usp=drive_link"
+CLASSIFIER_ID="1B_Ohq7HqCkzCBIh8C5NsrFA6RAfFfwPt"
+CANINO_ID="1f3rOxLYnwad-knkd8nZTslqdfQ2hChFM"
+FELINO_ID="12r40vOmQZnbXkYMPqkYfE-fNJWonqUzG"
+
+download_model() {
+    local file_id="$1"
+    local output_path="$2"
+
+    gdown --id "$file_id" -O "$output_path"
+
+    if [ ! -s "$output_path" ]; then
+        echo "❌ Modelo vazio ou não baixado corretamente: $output_path"
+        exit 1
+    fi
+}
 
 # =========================
 # Download
 # =========================
 echo "▶ Baixando classificador de espécie..."
-wget -O models/classifier/species_classifier.pth "$CLASSIFIER_URL"
+download_model "$CLASSIFIER_ID" models/classifier/species_classifier.pth
 
 echo "▶ Baixando modelo Detectron2 – Canino..."
-wget -O models/detectron/canino/model_final_canino.pth "$CANINO_URL"
+download_model "$CANINO_ID" models/detectron/canino/model_final_canino.pth
 
 echo "▶ Baixando modelo Detectron2 – Felino..."
-wget -O models/detectron/felino/model_final_felino.pth "$FELINO_URL"
+download_model "$FELINO_ID" models/detectron/felino/model_final_felino.pth
 
 echo "✅ Todos os modelos foram baixados com sucesso!"
