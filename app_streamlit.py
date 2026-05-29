@@ -19,13 +19,13 @@ if uploaded_file is not None:
     st.image(image, caption="Imagem original", use_column_width=True)
 
     # Enviar para a API
-    files = {"file": (uploaded_file.name, uploaded_file, "image/jpeg")}
+    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
     try:
         response = requests.post(
             f"{api_url}/detectron/predict_auto",
-            files=files,
-            timeout=120
+            files=files
         )
+        
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:
