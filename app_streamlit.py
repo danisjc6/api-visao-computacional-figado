@@ -1,11 +1,15 @@
+import os
+
 import streamlit as st
 import requests
 from PIL import Image
-import io
 
 st.set_page_config(page_title="Detecção de Fígado", layout="centered")
 
 st.title("Detecção de Fígado Canino/Felino 🐶🐱")
+
+default_api_url = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000")
+api_url = st.sidebar.text_input("URL da API", value=default_api_url).rstrip("/")
 
 uploaded_file = st.file_uploader("Escolha uma imagem", type=["jpg", "jpeg", "png"])
 
@@ -17,7 +21,11 @@ if uploaded_file is not None:
     # Enviar para a API
     files = {"file": (uploaded_file.name, uploaded_file, "image/jpeg")}
     try:
-        response = requests.post("http://127.0.0.1:8000/detectron/predict_auto", files=files)
+        response = requests.post(
+            f"{api_url}/detectron/predict_auto",
+            files=files,
+            timeout=120
+        )
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:

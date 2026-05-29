@@ -55,34 +55,62 @@ api_visao_computacional/
 └─ README.md
 
 
-⚡ Rodando Localmente
+## ⚡ Rodando Localmente
 
-1. Ative seu ambiente virtual:
+1. Crie e ative o ambiente virtual:
 
-cd ~/api_visao_computacional
+```bash
+python -m venv venv
 source venv/bin/activate
+```
 
-Instale as dependências:
+2. Atualize o `pip` e instale as dependências:
 
+```bash
+pip install --upgrade pip
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
+pip install "git+https://github.com/facebookresearch/detectron2.git"
+```
 
+> O Detectron2 pode variar conforme sistema operacional, versão do PyTorch e uso de CPU/GPU. Se a instalação acima falhar, consulte a documentação oficial do Detectron2 para escolher o comando adequado ao seu ambiente.
 
-Suba a API FastAPI:
+3. Baixe os modelos treinados:
 
+```bash
+bash scripts/download_models.sh
+```
+
+Os pesos `.pth` não são versionados no Git. Eles devem ficar nos caminhos abaixo:
+
+```text
+models/classifier/species_classifier.pth
+models/detectron/canino/model_final_canino.pth
+models/detectron/felino/model_final_felino.pth
+```
+
+4. Suba a API FastAPI:
+
+```bash
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
+Teste os endpoints:
 
-Teste endpoints:
+- Health check: http://127.0.0.1:8000
+- Swagger UI: http://127.0.0.1:8000/docs
 
-http://127.0.0.1:8000
- → Health check
+5. Em outro terminal, com o ambiente virtual ativo, suba a interface Streamlit:
 
-http://127.0.0.1:8000/docs
- → Swagger UI
-
-Suba a interface Streamlit (opcional):
-
+```bash
 streamlit run app_streamlit.py
+```
+
+Por padrão, o Streamlit usa a API em `http://127.0.0.1:8000`. Para apontar para outra URL:
+
+```bash
+API_BASE_URL=http://127.0.0.1:8000 streamlit run app_streamlit.py
+```
 
 🐳 Usando Docker
 

@@ -2,11 +2,25 @@
 venv/
 .venv/
 
+# Variaveis locais
+.env
+.env.*
+!.env.example
+
 # Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Streamlit
+.streamlit/secrets.toml
 
 # PyTorch / modelos
 *.pth
@@ -33,5 +47,8 @@ Thumbs.db
 .vscode/
 .idea/
 
-uploads/
-outputs/
+# Arquivos gerados pela aplicacao
+uploads/*
+!uploads/.gitkeep
+outputs/*
+!outputs/.gitkeep
