@@ -10,6 +10,7 @@ API para detecção e classificação de fígado canino e felino em imagens méd
 
 ## 🗂 Estrutura do Projeto
 
+```text
 api_visao_computacional/
 │
 ├─ app/                        # Código principal da API
@@ -55,7 +56,7 @@ api_visao_computacional/
 ├─ .gitignore
 ├─ requirements.txt
 └─ README.md
-
+```
 
 ## ⚡ Rodando Localmente
 
@@ -114,21 +115,24 @@ Por padrão, o Streamlit usa a API em `http://127.0.0.1:8000`. Para apontar para
 API_BASE_URL=http://127.0.0.1:8000 streamlit run app_streamlit.py
 ```
 
-🐳 Usando Docker
+## 🐳 Usando Docker
 
 Build da imagem:
 
+```bash
 docker build -t api-figado .
-
+```
 
 Rodar container:
 
+```bash
 docker run -p 8000:8000 api-figado
-
+```
 
 A API estará acessível em http://localhost:8000.
 
-🧰 Scripts Auxiliares
+## 🧰 Scripts Auxiliares
+
 | Script                         | Função                                           |
 | ------------------------------ | ------------------------------------------------ |
 | `download_models.sh`           | Baixa ou move pesos grandes para a pasta correta |
@@ -139,20 +143,24 @@ A API estará acessível em http://localhost:8000.
 | `predict_detectron_labelme.py` | Prediz imagens usando dataset LabelMe            |
 
 
-📂 Estrutura de Modelos
+## 📂 Estrutura de Modelos
 
 Classificador CNN:
+
+```text
 models/classifier/species_classifier.pth
+```
 
 Detectron2:
 
-Canino: models/detectron/canino/model_final_canino.pth
-
-Felino: models/detectron/felino/model_final_felino.pth
+```text
+models/detectron/canino/model_final_canino.pth
+models/detectron/felino/model_final_felino.pth
+```
 
 Configs YAML correspondentes em cada pasta.
 
-🚀 Deploy
+## 🚀 Deploy
 
 Pode ser feito em servidor Linux, VPS ou cloud (AWS, GCP, Azure) usando Docker.
 
@@ -160,7 +168,7 @@ Basta buildar a imagem no servidor e rodar o container.
 
 Streamlit pode ser exposto em uma porta separada ou integrado à API com reverse proxy (Nginx).
 
-🔧 Observações
+## 🔧 Observações
 
 Logs e resultados: salvos em outputs/ e logs/ (quando criado).
 
@@ -170,7 +178,7 @@ Git: arquivos pesados (.pth) podem ser tratados com download_models.sh ou Git LF
 
 Reprodutibilidade: Docker garante ambiente consistente para qualquer servidor.
 
-💡 Contato
+## 💡 Contato
 
 Desenvolvido por Daniela Oliveira
 daniela.oliveira@ufape.edu.br
