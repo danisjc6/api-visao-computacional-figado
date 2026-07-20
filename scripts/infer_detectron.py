@@ -19,7 +19,7 @@ DATASET_IMG = "dataset_detectron/images"
 DATASET_ANN = "dataset_detectron/annotations.json"
 
 CONFIG_PATH = "models/detectron/canino/inferencia_canino.yaml"
-WEIGHTS_PATH = "models/detectron/canino/model_final.pth"
+WEIGHTS_PATH = "models/detectron/canino/model_final_canino.pth"
 
 OUTPUT_DIR = "scripts/results/detectron_canino"
 

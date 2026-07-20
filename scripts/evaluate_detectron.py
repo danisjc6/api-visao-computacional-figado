@@ -27,6 +27,16 @@ def parse_args():
         choices=["train", "val", "test"],
         help="Split do dataset para avaliação"
     )
+    parser.add_argument(
+        "--dataset-dir",
+        default="dataset_detectron",
+        help="Diretorio base do dataset Detectron"
+    )
+    parser.add_argument(
+        "--output-dir",
+        default="results/eval",
+        help="Diretorio base para salvar metricas"
+    )
     return parser.parse_args()
 
 
@@ -39,16 +49,14 @@ def main():
     SPECIES = args.species
     SPLIT = args.split
 
-    BASE_DATASET = "/home/daniela/Documentos/projeto RP treinamento/projeto RP/dataset_detectron"
-
     DATASET_NAME = f"figado_{SPECIES}_{SPLIT}"
-    DATASET_IMG = f"{BASE_DATASET}/{SPECIES}/{SPLIT}/images"
-    DATASET_ANN = f"{BASE_DATASET}/{SPECIES}/{SPLIT}/annotations.json"
+    DATASET_IMG = os.path.join(args.dataset_dir, SPECIES, SPLIT, "images")
+    DATASET_ANN = os.path.join(args.dataset_dir, SPECIES, SPLIT, "annotations.json")
 
     CONFIG_PATH = f"models/detectron/{SPECIES}/inferencia_{SPECIES}.yaml"
     WEIGHTS_PATH = f"models/detectron/{SPECIES}/model_final_{SPECIES}.pth"
 
-    OUTPUT_DIR = f"results/eval/{SPECIES}/{SPLIT}"
+    OUTPUT_DIR = os.path.join(args.output_dir, SPECIES, SPLIT)
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     # ======================

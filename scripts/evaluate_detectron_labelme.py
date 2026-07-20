@@ -1,4 +1,5 @@
 import os
+import argparse
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset
@@ -127,33 +128,41 @@ def evaluate_species(
 
     return results
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Avalia modelos Detectron2 usando anotacoes LabelMe"
+    )
+    parser.add_argument("--dataset-dir", default="dataset_detectron")
+    parser.add_argument("--models-dir", default="models/detectron")
+    parser.add_argument("--output-dir", default="results")
+    return parser.parse_args()
+
+
 # ======================================================
 # MAIN
 # ======================================================
 if __name__ == "__main__":
+    args = parse_args()
 
-    BASE_DATASET = "/home/daniela/Documentos/projeto RP treinamento/projeto RP/dataset_detectron"
-    BASE_MODELS = "/home/daniela/api_visao_computacional/models/detectron"
-
-    os.makedirs("results/canino", exist_ok=True)
-    os.makedirs("results/felino", exist_ok=True)
+    os.makedirs(os.path.join(args.output_dir, "canino"), exist_ok=True)
+    os.makedirs(os.path.join(args.output_dir, "felino"), exist_ok=True)
 
     # 🐶 CANINO
     evaluate_species(
         species_name="canino",
-        dataset_dir=f"{BASE_DATASET}/canino/val",
-        classes=["figado_canino", "processo_papilar_canino"],
-        config_path=f"{BASE_MODELS}/canino/inferencia_canino.yaml",
-        weights_path=f"{BASE_MODELS}/canino/model_final_canino.pth",
-        output_dir="results/canino"
+        dataset_dir=os.path.join(args.dataset_dir, "canino", "val"),
+        classes=["figado_cao", "processo_papilar_canino"],
+        config_path=os.path.join(args.models_dir, "canino", "inferencia_canino.yaml"),
+        weights_path=os.path.join(args.models_dir, "canino", "model_final_canino.pth"),
+        output_dir=os.path.join(args.output_dir, "canino"),
     )
 
     # 🐱 FELINO
     evaluate_species(
         species_name="felino",
-        dataset_dir=f"{BASE_DATASET}/felino/val",
+        dataset_dir=os.path.join(args.dataset_dir, "felino", "val"),
         classes=["figado_felino", "processo_papilar_felino"],
-        config_path=f"{BASE_MODELS}/felino/inferencia_felino.yaml",
-        weights_path=f"{BASE_MODELS}/felino/model_final_felino.pth",
-        output_dir="results/felino"
+        config_path=os.path.join(args.models_dir, "felino", "inferencia_felino.yaml"),
+        weights_path=os.path.join(args.models_dir, "felino", "model_final_felino.pth"),
+        output_dir=os.path.join(args.output_dir, "felino"),
     )

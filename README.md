@@ -18,6 +18,9 @@ api_visao_computacional/
 │  ├─ classifier.py            # Classificador de espécie
 │  ├─ detectron.py             # Funções Detectron2
 │  ├─ utils.py                 # Funções utilitárias (leitura de imagens, anotação etc.)
+│  ├─ services/
+│  │  ├─ __init__.py
+│  │  └─ prediction_service.py # Pipeline único de predição
 │  └─ routers/
 │     ├─ __init__.py
 │     └─ detectron.py          # Endpoints específicos Detectron
@@ -39,7 +42,6 @@ api_visao_computacional/
 ├─ scripts/                    # Scripts auxiliares
 │  ├─ evaluate_classifier.py
 │  ├─ evaluate_detectron.py
-│  ├─ evaluate_detectron_coco.py
 │  ├─ evaluate_detectron_labelme.py
 │  ├─ infer_detectron.py
 │  ├─ predict_detectron_labelme.py
@@ -131,7 +133,8 @@ A API estará acessível em http://localhost:8000.
 | ------------------------------ | ------------------------------------------------ |
 | `download_models.sh`           | Baixa ou move pesos grandes para a pasta correta |
 | `evaluate_classifier.py`       | Avalia o classificador CNN                       |
-| `evaluate_detectron*.py`       | Avalia modelos Detectron2 (LabelMe ou COCO)      |
+| `evaluate_detectron.py`        | Avalia modelos Detectron2 em formato COCO        |
+| `evaluate_detectron_labelme.py` | Avalia modelos Detectron2 com anotações LabelMe  |
 | `infer_detectron.py`           | Executa inferência em imagens de teste           |
 | `predict_detectron_labelme.py` | Prediz imagens usando dataset LabelMe            |
 

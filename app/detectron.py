@@ -1,35 +1,28 @@
-# api_visao_computacional/app/detectron.py
 import os
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
 
-# Base path onde estão os arquivos de configuração e pesos
-BASE_PATH = "models/detectron"
 
-def load_predictor(species: str):
+def load_predictor(species: str, model_config: dict):
     """
-    Carrega um predictor do Detectron2 para a espécie especificada ('canino' ou 'felino').
-
-    Args:
-        species (str): 'canino' ou 'felino'
-
-    Returns:
-        DefaultPredictor: objeto para realizar inferência
+    Carrega um predictor do Detectron2 para a espécie especificada.
     """
     cfg = get_cfg()
 
-    # Caminho do YAML de inferência (configuração)
-    yaml_path = os.path.join(BASE_PATH, species, f"inferencia_{species}.yaml")
+    yaml_path = model_config["config"]
     if not os.path.isfile(yaml_path):
-        raise FileNotFoundError(f"Config file '{yaml_path}' não encontrado!")
+        raise FileNotFoundError(
+            f"Config Detectron para '{species}' não encontrado: {yaml_path}"
+        )
 
     cfg.merge_from_file(yaml_path)
 
-    # Caminho do modelo treinado
-    weights_path = os.path.join(BASE_PATH, species, f"model_final_{species}.pth")
+    weights_path = model_config["weights"]
     if not os.path.isfile(weights_path):
-        raise FileNotFoundError(f"Modelo '{weights_path}' não encontrado!")
+        raise FileNotFoundError(
+            f"Modelo Detectron para '{species}' não encontrado: {weights_path}"
+        )
 
     cfg.MODEL.WEIGHTS = weights_path
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # threshold de confiança
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = model_config.get("score_threshold", 0.35)
     return DefaultPredictor(cfg)

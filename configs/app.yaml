@@ -7,10 +7,28 @@ detectron:
   canino:
     config: "models/detectron/canino/inferencia_canino.yaml"
     weights: "models/detectron/canino/model_final_canino.pth"
+    score_threshold: 0.35
 
   felino:
     config: "models/detectron/felino/inferencia_felino.yaml"
     weights: "models/detectron/felino/model_final_felino.pth"
+    score_threshold: 0.35
+
+  class_names:
+    canino:
+      0: "figado_cao"
+      1: "processo_papilar_canino"
+    felino:
+      0: "figado_felino"
+      1: "processo_papilar_felino"
+
+  valid_liver_classes:
+    canino:
+      - "figado_cao"
+      - "processo_papilar_canino"
+    felino:
+      - "figado_felino"
+      - "processo_papilar_felino"
 
 logging:
   enabled: true

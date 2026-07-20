@@ -1,11 +1,11 @@
 from fastapi import FastAPI, UploadFile, File
-import numpy as np
 import yaml
 
 from app.classifier import SpeciesClassifier
 from app.detectron import load_predictor
-from app.utils import read_image, save_annotated_image
+from app.utils import read_image
 from app.routers import detectron
+from app.services.prediction_service import predict_liver
 
 # ======================
 # Instância única do FastAPI
@@ -21,29 +21,18 @@ with open("configs/app.yaml") as f:
 # ======================
 # Load MODELS (uma vez só)
 # ======================
-classifier = SpeciesClassifier(CFG["classifier"]["model"], threshold=0.7)
+classifier = SpeciesClassifier(
+    CFG["classifier"]["model"],
+    threshold=CFG["classifier"].get("threshold", 0.7),
+)
 
 predictors = {
-    "canino": load_predictor("canino"),
-    "felino": load_predictor("felino")
+    "canino": load_predictor("canino", CFG["detectron"]["canino"]),
+    "felino": load_predictor("felino", CFG["detectron"]["felino"])
 }
 
-
-VALID_LIVER_CLASSES = {
-    "canino": ["figado_cao", "processo_papilar_canino"],
-    "felino": ["figado_felino", "processo_papilar_felino"]
-}
-
-CLASS_NAMES = {
-    "canino": {
-        0: "figado_cao",
-        1: "processo_papilar_canino"
-    },
-    "felino": {
-        0: "figado_felino",
-        1: "processo_papilar_felino"
-    }
-}
+CLASS_NAMES = CFG["detectron"]["class_names"]
+VALID_LIVER_CLASSES = CFG["detectron"]["valid_liver_classes"]
 
 app.state.classifier = classifier
 app.state.predictors = predictors
@@ -55,70 +44,15 @@ app.state.valid_liver_classes = VALID_LIVER_CLASSES
 # ======================
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    # ---- read image
     image = read_image(await file.read())
 
-    # ---- species classification
-    especie, conf = classifier.predict(image)
-
-    if especie is None:
-        return {
-            "status": "rejeitado",
-            "motivo": "Imagem não parece ser fígado de cão ou gato",
-            "confidence": round(conf, 3)
-        }
-
-    # ---- detectron inference
-    predictor = predictors[especie]
-    outputs = predictor(np.array(image))
-    instances = outputs["instances"].to("cpu")
-
-    if len(instances) == 0:
-        return {
-            "status": "rejeitado",
-            "motivo": "Nenhuma estrutura hepática detectada"
-        }
-
-    # ---- extrair boxes, scores e classes corretamente
-    boxes = instances.pred_boxes.tensor
-    scores = instances.scores
-    classes = instances.pred_classes
-
-    # ---- validar classes detectadas
-    detected_names = [CLASS_NAMES[especie][int(c)] for c in classes]
-
-    if not any(name in VALID_LIVER_CLASSES[especie] for name in detected_names):
-        return {
-            "status": "rejeitado",
-            "motivo": "Imagem não contém fígado"
-        }
-
-    # ---- criar lista de deteccoes
-    detections = []
-    for box, score, cls in zip(boxes, scores, classes):
-        cls_id = int(cls)
-        detections.append({
-            "classe": CLASS_NAMES[especie].get(cls_id, "desconhecida"),
-            "score": round(float(score), 3),
-            "bbox": [int(v) for v in box.tolist()]
-        })
-
-    # ---- salvar imagem anotada
-    image_path = save_annotated_image(
+    return predict_liver(
         image=image,
-        instances=instances,
-        especie=especie,
-        class_names=CLASS_NAMES
+        classifier=classifier,
+        predictors=predictors,
+        class_names=CLASS_NAMES,
+        valid_liver_classes=VALID_LIVER_CLASSES,
     )
-
-    return {
-        "status": "ok",
-        "especie": especie,
-        "confidence_especie": round(conf, 3),
-        "num_instancias": len(detections),
-        "deteccoes": detections,
-        "imagem_anotada": image_path
-    }
 
 # ======================
 # Router detectron separado
