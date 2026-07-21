@@ -113,7 +113,7 @@ def predict_liver(
         })
 
     # ----------------------------
-    # 6. Salvar imagem anotada
+    # 6. Gera imagem anotada
     # ----------------------------
     imagem_base64 = build_annotated_image_base64(
         image=image,
